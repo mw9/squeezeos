@@ -27,6 +27,7 @@ SRC_URI="${RALPHY_SQUEEZEOS}/atheros-ar6ksdk.build_sw.${DV}.tar.gz \
 	 file://0009-arp-dhcp-logging.patch;patch=1 \
 	 file://0010-driver-debug-hdr-ptr.patch;patch=1 \
 	 file://0011-driver-debug-stop-endpoint.patch;patch=1 \
+	 file://0012-log-wmi-set-BSS-filter-command.patch;patch=1 \
 	\
 	 file://bmiloader \
 	 file://wmiconfig \

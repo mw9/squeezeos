@@ -1,0 +1,56 @@
+From 55d294aab58eeea6e76a01ee98f259db6329461e Mon Sep 17 00:00:00 2001
+From: Martin Williams <martinr.williams@gmail.com>
+Date: Sun, 23 Feb 2025 21:25:35 +0000
+Subject: [PATCH] log-wmi-set-BSS-filter-command
+
+Logs the execution of the WMI BSS Filter command to assist in tracing the
+actions of wpa_supplicant, etc.
+---
+ AR6kSDK.build_sw.83/host/wmi/wmi.c | 31 ++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git AR6kSDK.build_sw.83/host/wmi/wmi.c AR6kSDK.build_sw.83/host/wmi/wmi.c
+index b6afd24..6f7cef4 100644
+--- AR6kSDK.build_sw.83/host/wmi/wmi.c
++++ AR6kSDK.build_sw.83/host/wmi/wmi.c
+@@ -2375,6 +2375,37 @@ wmi_bssfilter_cmd(struct wmi_t *wmip, A_UINT8 filter, A_UINT32 ieMask)
+     void *osbuf;
+     WMI_BSS_FILTER_CMD *cmd;
+ 
++    /* log this command - to assist in tracing wpa_supplicant behaviour */
++    switch (filter) {
++    case (NONE_BSS_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'none' (%d - no beacons forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    case (ALL_BSS_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'all' (%d - all beacons forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    case (PROFILE_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'profile' (%d - only beacons matching profile forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    case (ALL_BUT_PROFILE_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'not_profile' (%d - all but beacons matching profile forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    case (CURRENT_BSS_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'bss' (%d - only beacons matching current BSS forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    case (ALL_BUT_BSS_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'not_bss' (%d - all but beacons matching current BSS forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    case (PROBED_SSID_FILTER):
++        A_PRINTF("AR6000 WMI - setting BSS filter to 'ssid' (%d - beacons matching probed SSID forwarded) - and ieMask to %u\n", filter, (u32)ieMask);
++        break;
++    default:
++        A_PRINTF("AR6000 WMI - setting BSS filter to unrecognized value %d", filter);
++        if (filter >= LAST_BSS_FILTER) {
++            A_PRINTF(" - will be ignored");
++        }
++        A_PRINTF("\n");
++    }
++
+     if (filter >= LAST_BSS_FILTER) {
+         return A_EINVAL;
+     }
+-- 
+2.48.0
+
