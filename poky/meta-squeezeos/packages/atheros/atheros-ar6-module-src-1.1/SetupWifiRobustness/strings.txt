@@ -9,19 +9,19 @@ ARPWATCH_ENABLE
 	EN	Enable ARP watchdog
 
 ARPWATCH_HOWTO
-	EN	The ARP watchdog will reset the wifi stack if network connectivity seems to have stopped
+	EN	The ARP watchdog will reset the wifi stack if network connectivity seems to have stopped.
 
 GONLY_ENABLE
 	EN	Disable legacy 802.11b
 
 GONLY_HOWTO
-	EN	Disabling legacy 802.11b can improve wifi stability but may also prevent connecting to some wifi access points
+	EN	Disabling legacy 802.11b can improve wifi stability but may also prevent connecting to some wifi access points.
 
 FILTERALL_ENABLE
 	EN	Enable all BSS filters
 
 FILTERALL_HOWTO
-	EN	Enabling all BSS filters restores this default option set in the original firmware
+	EN	Enabling all BSS filters restores this default option set in the original firmware.
 
 TRUNCATED_BCN_TITLE
 	EN	Truncated beacon count

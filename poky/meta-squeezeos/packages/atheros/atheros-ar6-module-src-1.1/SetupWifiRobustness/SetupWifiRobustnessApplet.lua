@@ -26,12 +26,14 @@ local jnt                    = jnt
 module(..., Framework.constants)
 oo.class(_M, Applet)
 
+local confFile = "/etc/wlan.conf"
+
 function settingsShow(self, menuItem)
-	local settingsChanged = false
-	local gonlyEnabled = _fileMatch("/etc/wlan.conf", "^gonly=on")
-	local arpwatchEnabled = _fileMatch("/etc/wlan.conf", "^arpwatch=on")
-	local filterallEnabled = _fileMatch("/etc/wlan.conf", "^filterall=on")
-	local maxperfEnabled = _fileMatch("/etc/wlan.conf", "^maxperf=on")
+	local settingsChanged  = false
+	local gonlyEnabled     = _fileMatch(confFile, "^gonly=on")
+	local arpwatchEnabled  = _fileMatch(confFile, "^arpwatch=on")
+	local filterallEnabled = _fileMatch(confFile, "^filterall=on")
+	local maxperfEnabled   = _fileMatch(confFile, "^maxperf=on")
 
 	local window = Window("help_list", menuItem.text, 'settingstitle')
 	local menu = SimpleMenu("menu", {
@@ -43,10 +45,10 @@ function settingsShow(self, menuItem)
 									settingsChanged = true
 									if isSelected then
 										log:warn("wlan.conf setting arpwatch=on");
-										_fileSub("/etc/wlan.conf", "^arpwatch=.*$", "arpwatch=on")  
+										_fileSub(confFile, "^arpwatch=.*$", "arpwatch=on")
 									else
 										log:warn("wlan.conf setting arpwatch=off");
-										_fileSub("/etc/wlan.conf", "^arpwatch=.*$", "arpwatch=off")
+										_fileSub(confFile, "^arpwatch=.*$", "arpwatch=off")
 									end
 								end,
 								arpwatchEnabled
@@ -65,10 +67,10 @@ function settingsShow(self, menuItem)
 									settingsChanged = true
 									if isSelected then
 										log:warn("wlan.conf setting gonly=on");
-										_fileSub("/etc/wlan.conf", "^gonly=.*$", "gonly=on")  
+										_fileSub(confFile, "^gonly=.*$", "gonly=on")
 									else
 										log:warn("wlan.conf setting gonly=off");
-										_fileSub("/etc/wlan.conf", "^gonly=.*$", "gonly=off")
+										_fileSub(confFile, "^gonly=.*$", "gonly=off")
 									end
 								end,
 								gonlyEnabled
@@ -87,10 +89,10 @@ function settingsShow(self, menuItem)
 									settingsChanged = true
 									if isSelected then
 										log:warn("wlan.conf setting filterall=on");
-										_fileSub("/etc/wlan.conf", "^filterall=.*$", "filterall=on")  
+										_fileSub(confFile, "^filterall=.*$", "filterall=on")
 									else
 										log:warn("wlan.conf setting filterall=off");
-										_fileSub("/etc/wlan.conf", "^filterall=.*$", "filterall=off")
+										_fileSub(confFile, "^filterall=.*$", "filterall=off")
 									end
 								end,
 								filterallEnabled
@@ -111,7 +113,7 @@ function settingsShow(self, menuItem)
 		text     = self:string("TRUNCATED_BCN_TITLE"),
 		sound    = "WINDOWSHOW",
 		callback = function (event, menuItem)
-			local window = Window("text_list", self:string("TRUNCATED_BCN_TITLE"))
+			local window = Window("text_list", menuItem.text)
 			window:setAllowScreensaver(false)
 			local grepRes = io.popen("/bin/grep -ci \'AR6000\\s\\+Truncated\' /var/log/messages")
 			local truncation_cnt = grepRes:read("*line")
@@ -119,7 +121,7 @@ function settingsShow(self, menuItem)
 			if not truncation_cnt then
 				truncation_cnt = "<Read error>"
 			end
-			local text   = Textarea('help_text', self:string("TRUNCATED_BCN_TEXT", tostring(truncation_cnt)))
+			local text = Textarea('help_text', self:string("TRUNCATED_BCN_TEXT", tostring(truncation_cnt)))
 			window:addWidget(text)
 			self:tieAndShowWindow(window)
 		end
@@ -130,27 +132,27 @@ function settingsShow(self, menuItem)
 		text     = self:string("MAXPERF_ENABLE"),
 		sound    = "WINDOWSHOW",
 		callback = function (event, menuItem)
-			local window = Window("text_list", self:string("MAXPERF_ENABLE"))
+			local window = Window("text_list", menuItem.text)
 			window:setAllowScreensaver(false)
-			local menu =  SimpleMenu("menu")
+			local menu = SimpleMenu("menu")
 			menu:setHeaderWidget(Textarea("help_text", self:string("MAXPERF_HOWTO")))
 			local checkb = Checkbox("checkbox",
 					function(_, isSelected)
 						settingsChanged = true
 						if isSelected then
-							log:warn("wlan.conf setting maxperf=on")
-							_fileSub("/etc/wlan.conf", "^maxperf=.*$", "maxperf=on")
+							log:info("wlan.conf setting maxperf=on")
+							_fileSub(confFile, "^maxperf=.*$", "maxperf=on")
 							maxperfEnabled = true
 						else
-							log:warn("wlan.conf setting maxperf=off")
-							_fileSub("/etc/wlan.conf", "^maxperf=.*$", "maxperf=off")
+							log:info("wlan.conf setting maxperf=off")
+							_fileSub(confFile, "^maxperf=.*$", "maxperf=off")
 							maxperfEnabled = false
 						end
 					end,
 					maxperfEnabled
 				)
 			menu:addItem({
-				text  = self:string("MAXPERF_ENABLE"),
+				text  = menuItem.text,
 				style = 'item_choice',
 				check = checkb,
 			})
@@ -163,10 +165,11 @@ function settingsShow(self, menuItem)
 	window:addListener(EVENT_WINDOW_POP,
 		function()
 			if settingsChanged then
+				log:info("Executing /lib/atheros/restart-wifi.sh")
 				os.execute("/lib/atheros/restart-wifi.sh &")
 			end
 		end
-	)        
+	)
 
 	self.window = window
 	self.menu = menu
@@ -185,7 +188,7 @@ end
 
 function _fileMatch(file, pattern)
 	local fi, err = io.open(file, "r")
-	
+
 	if (err) then 
 		return false
 	end
@@ -195,7 +198,6 @@ function _fileMatch(file, pattern)
 			fi:close()
 			return true
 		end
-
 	end
 	fi:close()
 
