@@ -36,77 +36,112 @@ function settingsShow(self, menuItem)
 	local maxperfEnabled   = _fileMatch(confFile, "^maxperf=on")
 
 	local window = Window("help_list", menuItem.text, 'settingstitle')
-	local menu = SimpleMenu("menu", {
-					{
-						text = self:string("ARPWATCH_ENABLE"),
-						style = 'item_choice',
-						check = Checkbox("checkbox",
-								function(_, isSelected)
-									settingsChanged = true
-									if isSelected then
-										log:warn("wlan.conf setting arpwatch=on");
-										_fileSub(confFile, "^arpwatch=.*$", "arpwatch=on")
-									else
-										log:warn("wlan.conf setting arpwatch=off");
-										_fileSub(confFile, "^arpwatch=.*$", "arpwatch=off")
-									end
-								end,
-								arpwatchEnabled
-							),
-						focusGained = function(event)
-							self.howto = Textarea("help_text", self:string("ARPWATCH_HOWTO"))
-							self.menu:setHeaderWidget(self.howto)
-							self.menu:reLayout()
-						end
-					},
-					{
-						text = self:string("GONLY_ENABLE"),
-						style = 'item_choice',
-						check = Checkbox("checkbox",
-								function(_, isSelected)
-									settingsChanged = true
-									if isSelected then
-										log:warn("wlan.conf setting gonly=on");
-										_fileSub(confFile, "^gonly=.*$", "gonly=on")
-									else
-										log:warn("wlan.conf setting gonly=off");
-										_fileSub(confFile, "^gonly=.*$", "gonly=off")
-									end
-								end,
-								gonlyEnabled
-							),
-						focusGained = function(event)
-							self.howto = Textarea("help_text", self:string("GONLY_HOWTO"))
-							self.menu:setHeaderWidget(self.howto)
-							self.menu:reLayout()
-						end
-					},
-					{
-						text = self:string("FILTERALL_ENABLE"),
-						style = 'item_choice',
-						check = Checkbox("checkbox",
-								function(_, isSelected)
-									settingsChanged = true
-									if isSelected then
-										log:warn("wlan.conf setting filterall=on");
-										_fileSub(confFile, "^filterall=.*$", "filterall=on")
-									else
-										log:warn("wlan.conf setting filterall=off");
-										_fileSub(confFile, "^filterall=.*$", "filterall=off")
-									end
-								end,
-								filterallEnabled
-							),
-						focusGained = function(event)
-							self.howto = Textarea("help_text", self:string("FILTERALL_HOWTO"))
-							self.menu:setHeaderWidget(self.howto)
-							self.menu:reLayout()
-						end
-					},
-				})
+	window:setAllowScreensaver(false)
 
-	window:addWidget(menu)
+	local menu = SimpleMenu("menu")
+	menu:setHeaderWidget(Textarea("help_text", self:string("WIFI_ROBUSTNESS_HELP")))
 
+	-- Activate ARP watch - watch-arp.sh
+	menu:addItem ({
+		text     = self:string("ARPWATCH_ENABLE"),
+		sound    = "WINDOWSHOW",
+		callback = function (event, menuItem)
+			local window = Window("text_list", menuItem.text)
+			window:setAllowScreensaver(false)
+			local menu = SimpleMenu("menu")
+			menu:setHeaderWidget(Textarea("help_text", self:string("ARPWATCH_HOWTO")))
+			local checkb = Checkbox("checkbox",
+					function(_, isSelected)
+						settingsChanged = true
+						if isSelected then
+							log:info("wlan.conf setting arpwatch=on");
+							_fileSub(confFile, "^arpwatch=.*$", "arpwatch=on")
+							arpwatchEnabled = true
+						else
+							log:info("wlan.conf setting arpwatch=off");
+							_fileSub(confFile, "^arpwatch=.*$", "arpwatch=off")
+							arpwatchEnabled = false
+						end
+					end,
+					arpwatchEnabled
+				)
+			menu:addItem({
+				text  = menuItem.text,
+				style = 'item_choice',
+				check = checkb,
+			})
+			window:addWidget(menu)
+			self:tieAndShowWindow(window)
+		end
+	})
+
+	-- Enable setting 'wmiconfig -i eth1 --wmode gonly'
+	menu:addItem ({
+		text     = self:string("GONLY_ENABLE"),
+		sound    = "WINDOWSHOW",
+		callback = function (event, menuItem)
+			local window = Window("text_list", menuItem.text)
+			window:setAllowScreensaver(false)
+			local menu = SimpleMenu("menu")
+			menu:setHeaderWidget(Textarea("help_text", self:string("GONLY_HOWTO")))
+			local checkb = Checkbox("checkbox",
+					function(_, isSelected)
+						settingsChanged = true
+						if isSelected then
+							log:info("wlan.conf setting gonly=on");
+							_fileSub(confFile, "^gonly=.*$", "gonly=on")
+							gonlyEnabled = true
+						else
+							log:info("wlan.conf setting gonly=off");
+							_fileSub(confFile, "^gonly=.*$", "gonly=off")
+							gonlyEnabled = false
+						end
+					end,
+					gonlyEnabled
+				)
+			menu:addItem({
+				text  = menuItem.text,
+				style = 'item_choice',
+				check = checkb,
+			})
+			window:addWidget(menu)
+			self:tieAndShowWindow(window)
+		end
+	})
+
+	-- Enable setting 'wmiconfig -i eth1 --filter=all'
+	menu:addItem ({
+		text     = self:string("FILTERALL_ENABLE"),
+		sound    = "WINDOWSHOW",
+		callback = function (event, menuItem)
+			local window = Window("text_list", menuItem.text)
+			window:setAllowScreensaver(false)
+			local menu = SimpleMenu("menu")
+			menu:setHeaderWidget(Textarea("help_text", self:string("FILTERALL_HOWTO")))
+			local checkb = Checkbox("checkbox",
+					function(_, isSelected)
+						settingsChanged = true
+						if isSelected then
+							log:info("wlan.conf setting filterall=on")
+							_fileSub(confFile, "^filterall=.*$", "filterall=on")
+							filterallEnabled = true
+						else
+							log:info("wlan.conf setting filterall=off")
+							_fileSub(confFile, "^filterall=.*$", "filterall=off")
+							filterallEnabled = false
+						end
+					end,
+					filterallEnabled
+				)
+			menu:addItem({
+				text  = menuItem.text,
+				style = 'item_choice',
+				check = checkb,
+			})
+			window:addWidget(menu)
+			self:tieAndShowWindow(window)
+		end
+	})
 
 	-- Displays the number of truncated beacons logged.
 	menu:addItem ({
@@ -161,6 +196,8 @@ function settingsShow(self, menuItem)
 		end
 	})
 
+	window:addWidget(menu)
+
 	-- Restart the WiFi when the menu is exited
 	window:addListener(EVENT_WINDOW_POP,
 		function()
@@ -172,18 +209,10 @@ function settingsShow(self, menuItem)
 	)
 
 	self.window = window
-	self.menu = menu
-	self:_addHelpInfo()
+	self.menu   = menu
 
 	self:tieAndShowWindow(window)
 	return window
-end
-
-function _addHelpInfo(self)
-	self.howto = Textarea("help_text", self:string("GONLY_HOWTO"))
-	self.menu:setHeaderWidget(self.howto)
-
-	self.window:focusWidget(self.menu)
 end
 
 function _fileMatch(file, pattern)

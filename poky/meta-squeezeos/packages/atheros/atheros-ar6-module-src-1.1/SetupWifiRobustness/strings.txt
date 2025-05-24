@@ -5,6 +5,9 @@
 WIFI_ROBUSTNESS
 	EN	Wifi Robustness Options
 
+WIFI_ROBUSTNESS_HELP
+	EN	The Radio sometimes experiences WiFi connectivity problems. These options may help overcome them.
+
 ARPWATCH_ENABLE
 	EN	Enable ARP watchdog
 
