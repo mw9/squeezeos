@@ -14,11 +14,20 @@ ARPWATCH_ENABLE
 ARPWATCH_HOWTO
 	EN	The ARP watchdog will reset the wifi stack if network connectivity seems to have stopped.
 
-GONLY_ENABLE
-	EN	Disable legacy 802.11b
+WMODE_SETTINGS
+	EN	Wireless mode settings
 
-GONLY_HOWTO
-	EN	Disabling legacy 802.11b can improve wifi stability but may also prevent connecting to some wifi access points.
+WMODE_LABEL
+	EN	WiFi mode
+
+WMODE_HOWTO
+	EN	Customize certain WiFi operating modes. Modes available:\nOff, disable 802.11b, 'mode g'
+
+WMODE_HELP
+	EN	WiFi mode help
+
+WMODE_HELPTXT
+	EN	This setting allows customization of certain WiFi operating modes.\n\nDisabling legacy 802.11b might be required to connect to certain Access Points, and it may improve WiFi stability. But it will also prevent connection with some Access Points.\n\nSome people say that the 'mode g' setting improves stability.\n\n
 
 FILTERALL_ENABLE
 	EN	Enable all BSS filters

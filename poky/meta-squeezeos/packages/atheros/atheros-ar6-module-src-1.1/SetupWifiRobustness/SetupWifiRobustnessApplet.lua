@@ -11,6 +11,7 @@ local string                 = require("string")
 local Applet                 = require("jive.Applet")
 local System                 = require("jive.System")
 local Checkbox               = require("jive.ui.Checkbox")
+local Choice                 = require("jive.ui.Choice")
 local Framework              = require("jive.ui.Framework")
 local Icon                   = require("jive.ui.Icon")
 local Label                  = require("jive.ui.Label")
@@ -31,6 +32,7 @@ local confFile = "/etc/wlan.conf"
 function settingsShow(self, menuItem)
 	local settingsChanged  = false
 	local gonlyEnabled     = _fileMatch(confFile, "^gonly=on")
+	local modegEnabled     = _fileMatch(confFile, "^mode_g=on")
 	local arpwatchEnabled  = _fileMatch(confFile, "^arpwatch=on")
 	local filterallEnabled = _fileMatch(confFile, "^filterall=on")
 	local maxperfEnabled   = _fileMatch(confFile, "^maxperf=on")
@@ -75,34 +77,71 @@ function settingsShow(self, menuItem)
 		end
 	})
 
-	-- Enable setting 'wmiconfig -i eth1 --wmode gonly'
+	-- WiFi mode
+	-- Enable setting one of 'wmiconfig -i eth1 --wmode gonly' or 'wmiconfig -i eth1 --wmode g'
 	menu:addItem ({
-		text     = self:string("GONLY_ENABLE"),
+		text     = self:string("WMODE_SETTINGS"),
 		sound    = "WINDOWSHOW",
 		callback = function (event, menuItem)
 			local window = Window("text_list", menuItem.text)
 			window:setAllowScreensaver(false)
+
+			-- Set up current choice
+			local currentIndex = 1  -- Off
+			if gonlyEnabled then
+				currentIndex = 2
+			elseif modegEnabled then
+				currentIndex = 3
+			end
+
 			local menu = SimpleMenu("menu")
-			menu:setHeaderWidget(Textarea("help_text", self:string("GONLY_HOWTO")))
-			local checkb = Checkbox("checkbox",
-					function(_, isSelected)
+			menu:setHeaderWidget(Textarea("help_text", self:string("WMODE_HOWTO")))
+
+			menu:addItem ({
+				text     = self:string("WMODE_HELP"),
+				sound    = "WINDOWSHOW",
+				callback = function (event, menuItem)
+					local window = Window("text_list", menuItem.text)
+					window:setAllowScreensaver(false)
+					local text = Textarea('help_text', self:string("WMODE_HELPTXT"))
+					window:addWidget(text)
+					self:tieAndShowWindow(window)
+				end
+			})
+
+			local choices = Choice(
+					"choice",
+					{ "Off - recommended", "802.11b disabled", "'mode g'" },
+					function(obj, selectedIndex)
+						log:debug( "Choice updated: ", tostring(selectedIndex), " - ", tostring(obj:getSelected()) )
 						settingsChanged = true
-						if isSelected then
+						if selectedIndex == 2 then
+							gonlyEnabled = true
+							modegEnabled = false
 							log:info("wlan.conf setting gonly=on");
 							_fileSub(confFile, "^gonly=.*$", "gonly=on")
-							gonlyEnabled = true
-						else
-							log:info("wlan.conf setting gonly=off");
-							_fileSub(confFile, "^gonly=.*$", "gonly=off")
+							_fileSub(confFile, "^mode_g=.*$", "mode_g=off")
+						elseif selectedIndex == 3 then
+							modegEnabled = true
 							gonlyEnabled = false
+							log:info("wlan.conf setting mode_g=on");
+							_fileSub(confFile, "^mode_g=.*$", "mode_g=on")
+							_fileSub(confFile, "^gonly=.*$", "gonly=off")
+						else -- default
+							gonlyEnabled = false
+							modegEnabled = false
+							log:info("wlan.conf setting gonly & mode_g=off");
+							_fileSub(confFile, "^gonly=.*$", "gonly=off")
+							_fileSub(confFile, "^mode_g=.*$", "mode_g=off")
 						end
+						currentIndex = selectedIndex
 					end,
-					gonlyEnabled
+					currentIndex
 				)
 			menu:addItem({
-				text  = menuItem.text,
+				text  = self:string("WMODE_LABEL"),
 				style = 'item_choice',
-				check = checkb,
+				check = choices,
 			})
 			window:addWidget(menu)
 			self:tieAndShowWindow(window)
