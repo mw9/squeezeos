@@ -1,0 +1,7 @@
+/etc/init.d/blupdate$
+/etc/init.d/monitor_msp430.sh$
+/etc/init.d/rcS$
+/etc/init.d/squeezeplay$
+/etc/init.d/suspend$
+/etc/init.d/udev$
+/etc/init.d/wlan$

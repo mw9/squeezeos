@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 
-PR = "r132"
+PR = "r133"
 
 SRC_URI = " \
 	file://asound.conf \
@@ -24,6 +24,7 @@ SRC_URI = " \
 	file://keep-after-upgrade \
 	file://linuxrc \
 	file://mdev.conf \
+	file://move-after-upgrade \
 	file://motd \
 	file://nsswitch.conf \
 	file://passwd \
@@ -115,6 +116,7 @@ do_install () {
 	install -m 0644 ${WORKDIR}/motd ${D}${sysconfdir}/motd
 	install -m 0644 ${WORKDIR}/mdev.conf ${D}${sysconfdir}/mdev.conf
 	install -m 0644 ${WORKDIR}/keep-after-upgrade ${D}${sysconfdir}/keep-after-upgrade
+	install -m 0644 ${WORKDIR}/move-after-upgrade ${D}${sysconfdir}/move-after-upgrade
 	install -m 0644 ${WORKDIR}/hostname ${D}${sysconfdir}/hostname
 	ln -sf /proc/mounts ${D}${sysconfdir}/mtab
 	install -m 0644 ${WORKDIR}/asound.conf ${D}${sysconfdir}/asound.conf
