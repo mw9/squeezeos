@@ -11,6 +11,7 @@ local string                 = require("string")
 local Applet                 = require("jive.Applet")
 local System                 = require("jive.System")
 local Checkbox               = require("jive.ui.Checkbox")
+local Choice                 = require("jive.ui.Choice")
 local Framework              = require("jive.ui.Framework")
 local Icon                   = require("jive.ui.Icon")
 local Label                  = require("jive.ui.Label")
@@ -26,92 +27,167 @@ local jnt                    = jnt
 module(..., Framework.constants)
 oo.class(_M, Applet)
 
+local confFile = "/etc/wlan.conf"
+
 function settingsShow(self, menuItem)
-	local settingsChanged = false
-	local gonlyEnabled = _fileMatch("/etc/wlan.conf", "^gonly=on")
-	local arpwatchEnabled = _fileMatch("/etc/wlan.conf", "^arpwatch=on")
-	local filterallEnabled = _fileMatch("/etc/wlan.conf", "^filterall=on")
-	local maxperfEnabled = _fileMatch("/etc/wlan.conf", "^maxperf=on")
+	local settingsChanged  = false
+	local gonlyEnabled     = _fileMatch(confFile, "^gonly=on")
+	local modegEnabled     = _fileMatch(confFile, "^mode_g=on")
+	local arpwatchEnabled  = _fileMatch(confFile, "^arpwatch=on")
+	local filterallEnabled = _fileMatch(confFile, "^filterall=on")
+	local maxperfEnabled   = _fileMatch(confFile, "^maxperf=on")
 
 	local window = Window("help_list", menuItem.text, 'settingstitle')
-	local menu = SimpleMenu("menu", {
-					{
-						text = self:string("ARPWATCH_ENABLE"),
-						style = 'item_choice',
-						check = Checkbox("checkbox",
-								function(_, isSelected)
-									settingsChanged = true
-									if isSelected then
-										log:warn("wlan.conf setting arpwatch=on");
-										_fileSub("/etc/wlan.conf", "^arpwatch=.*$", "arpwatch=on")  
-									else
-										log:warn("wlan.conf setting arpwatch=off");
-										_fileSub("/etc/wlan.conf", "^arpwatch=.*$", "arpwatch=off")
-									end
-								end,
-								arpwatchEnabled
-							),
-						focusGained = function(event)
-							self.howto = Textarea("help_text", self:string("ARPWATCH_HOWTO"))
-							self.menu:setHeaderWidget(self.howto)
-							self.menu:reLayout()
-						end
-					},
-					{
-						text = self:string("GONLY_ENABLE"),
-						style = 'item_choice',
-						check = Checkbox("checkbox",
-								function(_, isSelected)
-									settingsChanged = true
-									if isSelected then
-										log:warn("wlan.conf setting gonly=on");
-										_fileSub("/etc/wlan.conf", "^gonly=.*$", "gonly=on")  
-									else
-										log:warn("wlan.conf setting gonly=off");
-										_fileSub("/etc/wlan.conf", "^gonly=.*$", "gonly=off")
-									end
-								end,
-								gonlyEnabled
-							),
-						focusGained = function(event)
-							self.howto = Textarea("help_text", self:string("GONLY_HOWTO"))
-							self.menu:setHeaderWidget(self.howto)
-							self.menu:reLayout()
-						end
-					},
-					{
-						text = self:string("FILTERALL_ENABLE"),
-						style = 'item_choice',
-						check = Checkbox("checkbox",
-								function(_, isSelected)
-									settingsChanged = true
-									if isSelected then
-										log:warn("wlan.conf setting filterall=on");
-										_fileSub("/etc/wlan.conf", "^filterall=.*$", "filterall=on")  
-									else
-										log:warn("wlan.conf setting filterall=off");
-										_fileSub("/etc/wlan.conf", "^filterall=.*$", "filterall=off")
-									end
-								end,
-								filterallEnabled
-							),
-						focusGained = function(event)
-							self.howto = Textarea("help_text", self:string("FILTERALL_HOWTO"))
-							self.menu:setHeaderWidget(self.howto)
-							self.menu:reLayout()
-						end
-					},
-				})
+	window:setAllowScreensaver(false)
 
-	window:addWidget(menu)
+	local menu = SimpleMenu("menu")
+	menu:setHeaderWidget(Textarea("help_text", self:string("WIFI_ROBUSTNESS_HELP")))
 
+	-- Activate ARP watch - watch-arp.sh
+	menu:addItem ({
+		text     = self:string("ARPWATCH_ENABLE"),
+		sound    = "WINDOWSHOW",
+		callback = function (event, menuItem)
+			local window = Window("text_list", menuItem.text)
+			window:setAllowScreensaver(false)
+			local menu = SimpleMenu("menu")
+			menu:setHeaderWidget(Textarea("help_text", self:string("ARPWATCH_HOWTO")))
+			local checkb = Checkbox("checkbox",
+					function(_, isSelected)
+						settingsChanged = true
+						if isSelected then
+							log:info("wlan.conf setting arpwatch=on");
+							_fileSub(confFile, "^arpwatch=.*$", "arpwatch=on")
+							arpwatchEnabled = true
+						else
+							log:info("wlan.conf setting arpwatch=off");
+							_fileSub(confFile, "^arpwatch=.*$", "arpwatch=off")
+							arpwatchEnabled = false
+						end
+					end,
+					arpwatchEnabled
+				)
+			menu:addItem({
+				text  = menuItem.text,
+				style = 'item_choice',
+				check = checkb,
+			})
+			window:addWidget(menu)
+			self:tieAndShowWindow(window)
+		end
+	})
+
+	-- WiFi mode
+	-- Enable setting one of 'wmiconfig -i eth1 --wmode gonly' or 'wmiconfig -i eth1 --wmode g'
+	menu:addItem ({
+		text     = self:string("WMODE_SETTINGS"),
+		sound    = "WINDOWSHOW",
+		callback = function (event, menuItem)
+			local window = Window("text_list", menuItem.text)
+			window:setAllowScreensaver(false)
+
+			-- Set up current choice
+			local currentIndex = 1  -- Off
+			if gonlyEnabled then
+				currentIndex = 2
+			elseif modegEnabled then
+				currentIndex = 3
+			end
+
+			local menu = SimpleMenu("menu")
+			menu:setHeaderWidget(Textarea("help_text", self:string("WMODE_HOWTO")))
+
+			menu:addItem ({
+				text     = self:string("WMODE_HELP"),
+				sound    = "WINDOWSHOW",
+				callback = function (event, menuItem)
+					local window = Window("text_list", menuItem.text)
+					window:setAllowScreensaver(false)
+					local text = Textarea('help_text', self:string("WMODE_HELPTXT"))
+					window:addWidget(text)
+					self:tieAndShowWindow(window)
+				end
+			})
+
+			local choices = Choice(
+					"choice",
+					{ "Off - recommended", "802.11b disabled", "'mode g'" },
+					function(obj, selectedIndex)
+						log:debug( "Choice updated: ", tostring(selectedIndex), " - ", tostring(obj:getSelected()) )
+						settingsChanged = true
+						if selectedIndex == 2 then
+							gonlyEnabled = true
+							modegEnabled = false
+							log:info("wlan.conf setting gonly=on");
+							_fileSub(confFile, "^gonly=.*$", "gonly=on")
+							_fileSub(confFile, "^mode_g=.*$", "mode_g=off")
+						elseif selectedIndex == 3 then
+							modegEnabled = true
+							gonlyEnabled = false
+							log:info("wlan.conf setting mode_g=on");
+							_fileSub(confFile, "^mode_g=.*$", "mode_g=on")
+							_fileSub(confFile, "^gonly=.*$", "gonly=off")
+						else -- default
+							gonlyEnabled = false
+							modegEnabled = false
+							log:info("wlan.conf setting gonly & mode_g=off");
+							_fileSub(confFile, "^gonly=.*$", "gonly=off")
+							_fileSub(confFile, "^mode_g=.*$", "mode_g=off")
+						end
+						currentIndex = selectedIndex
+					end,
+					currentIndex
+				)
+			menu:addItem({
+				text  = self:string("WMODE_LABEL"),
+				style = 'item_choice',
+				check = choices,
+			})
+			window:addWidget(menu)
+			self:tieAndShowWindow(window)
+		end
+	})
+
+	-- Enable setting 'wmiconfig -i eth1 --filter=all'
+	menu:addItem ({
+		text     = self:string("FILTERALL_ENABLE"),
+		sound    = "WINDOWSHOW",
+		callback = function (event, menuItem)
+			local window = Window("text_list", menuItem.text)
+			window:setAllowScreensaver(false)
+			local menu = SimpleMenu("menu")
+			menu:setHeaderWidget(Textarea("help_text", self:string("FILTERALL_HOWTO")))
+			local checkb = Checkbox("checkbox",
+					function(_, isSelected)
+						settingsChanged = true
+						if isSelected then
+							log:info("wlan.conf setting filterall=on")
+							_fileSub(confFile, "^filterall=.*$", "filterall=on")
+							filterallEnabled = true
+						else
+							log:info("wlan.conf setting filterall=off")
+							_fileSub(confFile, "^filterall=.*$", "filterall=off")
+							filterallEnabled = false
+						end
+					end,
+					filterallEnabled
+				)
+			menu:addItem({
+				text  = menuItem.text,
+				style = 'item_choice',
+				check = checkb,
+			})
+			window:addWidget(menu)
+			self:tieAndShowWindow(window)
+		end
+	})
 
 	-- Displays the number of truncated beacons logged.
 	menu:addItem ({
 		text     = self:string("TRUNCATED_BCN_TITLE"),
 		sound    = "WINDOWSHOW",
 		callback = function (event, menuItem)
-			local window = Window("text_list", self:string("TRUNCATED_BCN_TITLE"))
+			local window = Window("text_list", menuItem.text)
 			window:setAllowScreensaver(false)
 			local grepRes = io.popen("/bin/grep -ci \'AR6000\\s\\+Truncated\' /var/log/messages")
 			local truncation_cnt = grepRes:read("*line")
@@ -119,7 +195,7 @@ function settingsShow(self, menuItem)
 			if not truncation_cnt then
 				truncation_cnt = "<Read error>"
 			end
-			local text   = Textarea('help_text', self:string("TRUNCATED_BCN_TEXT", tostring(truncation_cnt)))
+			local text = Textarea('help_text', self:string("TRUNCATED_BCN_TEXT", tostring(truncation_cnt)))
 			window:addWidget(text)
 			self:tieAndShowWindow(window)
 		end
@@ -130,27 +206,27 @@ function settingsShow(self, menuItem)
 		text     = self:string("MAXPERF_ENABLE"),
 		sound    = "WINDOWSHOW",
 		callback = function (event, menuItem)
-			local window = Window("text_list", self:string("MAXPERF_ENABLE"))
+			local window = Window("text_list", menuItem.text)
 			window:setAllowScreensaver(false)
-			local menu =  SimpleMenu("menu")
+			local menu = SimpleMenu("menu")
 			menu:setHeaderWidget(Textarea("help_text", self:string("MAXPERF_HOWTO")))
 			local checkb = Checkbox("checkbox",
 					function(_, isSelected)
 						settingsChanged = true
 						if isSelected then
-							log:warn("wlan.conf setting maxperf=on")
-							_fileSub("/etc/wlan.conf", "^maxperf=.*$", "maxperf=on")
+							log:info("wlan.conf setting maxperf=on")
+							_fileSub(confFile, "^maxperf=.*$", "maxperf=on")
 							maxperfEnabled = true
 						else
-							log:warn("wlan.conf setting maxperf=off")
-							_fileSub("/etc/wlan.conf", "^maxperf=.*$", "maxperf=off")
+							log:info("wlan.conf setting maxperf=off")
+							_fileSub(confFile, "^maxperf=.*$", "maxperf=off")
 							maxperfEnabled = false
 						end
 					end,
 					maxperfEnabled
 				)
 			menu:addItem({
-				text  = self:string("MAXPERF_ENABLE"),
+				text  = menuItem.text,
 				style = 'item_choice',
 				check = checkb,
 			})
@@ -159,33 +235,28 @@ function settingsShow(self, menuItem)
 		end
 	})
 
+	window:addWidget(menu)
+
 	-- Restart the WiFi when the menu is exited
 	window:addListener(EVENT_WINDOW_POP,
 		function()
 			if settingsChanged then
+				log:info("Executing /lib/atheros/restart-wifi.sh")
 				os.execute("/lib/atheros/restart-wifi.sh &")
 			end
 		end
-	)        
+	)
 
 	self.window = window
-	self.menu = menu
-	self:_addHelpInfo()
+	self.menu   = menu
 
 	self:tieAndShowWindow(window)
 	return window
 end
 
-function _addHelpInfo(self)
-	self.howto = Textarea("help_text", self:string("GONLY_HOWTO"))
-	self.menu:setHeaderWidget(self.howto)
-
-	self.window:focusWidget(self.menu)
-end
-
 function _fileMatch(file, pattern)
 	local fi, err = io.open(file, "r")
-	
+
 	if (err) then 
 		return false
 	end
@@ -195,7 +266,6 @@ function _fileMatch(file, pattern)
 			fi:close()
 			return true
 		end
-
 	end
 	fi:close()
 

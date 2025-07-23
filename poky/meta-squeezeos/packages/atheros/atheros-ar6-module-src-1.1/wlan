@@ -47,8 +47,11 @@ case "$1" in
 		${WORKAREA}/wmiconfig -i eth1 --filter=all
 	fi
 
+	# --wmode gonly and --wmode g are mutually exclusive
 	if [ "${gonly}" == "on" ]; then
 		${WORKAREA}/wmiconfig -i eth1 --wmode gonly
+	elif [ "${mode_g}" == "on" ]; then
+		${WORKAREA}/wmiconfig -i eth1 --wmode g
 	fi
 
 	if [ "${arpwatch}" == "on" ]; then

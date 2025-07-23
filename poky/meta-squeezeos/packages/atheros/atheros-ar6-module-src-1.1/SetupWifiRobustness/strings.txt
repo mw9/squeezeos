@@ -5,23 +5,35 @@
 WIFI_ROBUSTNESS
 	EN	Wifi Robustness Options
 
+WIFI_ROBUSTNESS_HELP
+	EN	The Radio sometimes experiences WiFi connectivity problems. These options may help overcome them.
+
 ARPWATCH_ENABLE
 	EN	Enable ARP watchdog
 
 ARPWATCH_HOWTO
-	EN	The ARP watchdog will reset the wifi stack if network connectivity seems to have stopped
+	EN	The ARP watchdog will reset the wifi stack if network connectivity seems to have stopped.
 
-GONLY_ENABLE
-	EN	Disable legacy 802.11b
+WMODE_SETTINGS
+	EN	Wireless mode settings
 
-GONLY_HOWTO
-	EN	Disabling legacy 802.11b can improve wifi stability but may also prevent connecting to some wifi access points
+WMODE_LABEL
+	EN	WiFi mode
+
+WMODE_HOWTO
+	EN	Customize certain WiFi operating modes. Modes available:\nOff, disable 802.11b, 'mode g'
+
+WMODE_HELP
+	EN	WiFi mode help
+
+WMODE_HELPTXT
+	EN	This setting allows customization of certain WiFi operating modes.\n\nDisabling legacy 802.11b might be required to connect to certain Access Points, and it may improve WiFi stability. But it will also prevent connection with some Access Points.\n\nSome people say that the 'mode g' setting improves stability.\n\n
 
 FILTERALL_ENABLE
 	EN	Enable all BSS filters
 
 FILTERALL_HOWTO
-	EN	Enabling all BSS filters restores this default option set in the original firmware
+	EN	Enabling all BSS filters restores this default option set in the original firmware.
 
 TRUNCATED_BCN_TITLE
 	EN	Truncated beacon count
