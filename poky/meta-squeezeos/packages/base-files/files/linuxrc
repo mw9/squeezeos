@@ -78,6 +78,8 @@ else
 	then
 		# Remove modified files
 		/bin/echo "SqueezeOS upgraded from $SQUEEZEOS_VERSION"
+		# Note that anything in /etc is kept, so we first move these modified system files aside
+		/usr/bin/find /mnt/storage/ -type f | /bin/grep -f /etc/move-after-upgrade | /usr/bin/xargs -I{} mv {} {}.preupgrade
 		/usr/bin/find /mnt/storage/ -type f | /bin/grep -v -f /etc/keep-after-upgrade | /usr/bin/xargs /bin/rm -f
 
 		# Delete udev cache
