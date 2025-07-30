@@ -3,8 +3,9 @@ HOMEPAGE = "http://www.ntfs-3g.org/"
 LICENSE = "GPLv2"
 DEPENDS = "fuse"
 RDEPENDS = "fuse"
+PR = "r1"
 
-SRC_URI = http://www.ntfs-3g.org/ntfs-3g-${PV}.tgz
+SRC_URI = "${RALPHY_SQUEEZEOS}/ntfs-3g-${PV}.tgz"
 
 inherit autotools
 
