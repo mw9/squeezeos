@@ -1,6 +1,6 @@
 require fuse.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI += "file://not-run-updaterc.d-on-host.patch;patch=1"
 

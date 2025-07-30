@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "fakeroot-native"
 RRECOMMENDS_fuse = "${@base_contains("MACHINE_FEATURES","kernel26","kernel-module-fuse","fuse-module",d)}"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/fuse/fuse-${PV}.tar.gz"
+SRC_URI = "${RALPHY_SQUEEZEOS}/fuse-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
