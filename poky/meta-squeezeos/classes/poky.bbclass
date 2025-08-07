@@ -1,5 +1,5 @@
 MIRRORS_append () {
-ftp://.*/.*    http://downloads.slimdevices.com/poky-cache/
-http://.*/.*   http://downloads.slimdevices.com/poky-cache/
-https://.*/.*   http://downloads.slimdevices.com/poky-cache/
+ftp://.*/.*    https://github.com/ralph-irving/squeezeos-pokycache/raw/refs/heads/public/${SQUEEZEOS_DISTRO_VERSION}/distfiles/
+http://.*/.*   https://github.com/ralph-irving/squeezeos-pokycache/raw/refs/heads/public/${SQUEEZEOS_DISTRO_VERSION}/distfiles/
+https://.*/.*  https://github.com/ralph-irving/squeezeos-pokycache/raw/refs/heads/public/${SQUEEZEOS_DISTRO_VERSION}/distfiles/
 }
