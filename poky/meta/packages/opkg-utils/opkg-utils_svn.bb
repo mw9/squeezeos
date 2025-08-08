@@ -3,9 +3,9 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "http://downloads.slimdevices.com/poky-cache/opkg-utils_svn.openmoko.org_.trunk.src.host._4534_.tar.gz"
+SRC_URI = "https://github.com/ralph-irving/squeezeos-pokycache/raw/refs/heads/public/${SQUEEZEOS_DISTRO_VERSION}/distfiles/opkg-utils_svn.openmoko.org_.trunk.src.host._4534_.tar.gz"
 
 S = "${WORKDIR}/opkg-utils"
 
