@@ -1,6 +1,6 @@
 DESCRIPTION = "GPGME - GnuPG Made Easy"
 LICENSE = "GPL"
-SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-${PV}.tar.bz2"
+SRC_URI = "https://gnupg.org/ftp/gcrypt/gpgme/gpgme-${PV}.tar.bz2"
 DEPENDS = "libgpg-error pth"
 PR = "r3"
 
