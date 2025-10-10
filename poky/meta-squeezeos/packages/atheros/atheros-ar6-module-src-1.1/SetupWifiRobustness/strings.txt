@@ -39,7 +39,7 @@ TRUNCATED_BCN_TITLE
 	EN	Truncated beacon count
 
 TRUNCATED_BCN_TEXT
-	EN	There are %s occurrences of 'truncated' WiFi beacons noted in the system log.\n\nThese are known to cause WiFi problems, although a handful seems to be tolerable.
+	EN	There are %s occurrences of 'truncated' WiFi beacons noted in the system log.\nThese are known to cause WiFi problems, although a handful seems to be tolerable.\n\nFALSE NEGATIVE WARNING\nHeavy system logging activity will cause 'truncated' WiFi beacon entries to be lost. This typically occurs when networking has failed. Set the 'net.http' log level, and perhaps other log settings, to 'Off' before relying on the count.\n
 
 MAXPERF_ENABLE
 	EN	Enable 'Power Maxperf'
