@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 
-PR = "r134"
+PR = "r135"
 
 SRC_URI = " \
 	file://asound.conf \
@@ -39,7 +39,6 @@ SRC_URI = " \
 	file://zcip_action \
 	file://wpa_action \
 	file://wpa_supplicant.conf \
-	file://dropbear_dss_host_key \
 	file://dropbear_rsa_host_key \
 	file://dropbear_ecdsa_host_key \
 	file://dropbear_ed25519_host_key \
@@ -124,7 +123,6 @@ do_install () {
 	install -m 0644 ${WORKDIR}/85-squeezeos.rules ${D}${sysconfdir}/udev/rules.d/85-squeezeos.rules
 
 	# dropbear keys - these should be dynamically generated, but it takes too long
-	install -m 0600 ${WORKDIR}/dropbear_dss_host_key ${D}${sysconfdir}/dropbear/dropbear_dss_host_key
 	install -m 0600 ${WORKDIR}/dropbear_rsa_host_key ${D}${sysconfdir}/dropbear/dropbear_rsa_host_key
 	install -m 0600 ${WORKDIR}/dropbear_ecdsa_host_key ${D}${sysconfdir}/dropbear/dropbear_ecdsa_host_key
 	install -m 0600 ${WORKDIR}/dropbear_ed25519_host_key ${D}${sysconfdir}/dropbear/dropbear_ed25519_host_key
