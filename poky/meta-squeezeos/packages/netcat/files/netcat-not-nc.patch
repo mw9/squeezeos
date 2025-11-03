@@ -1,0 +1,22 @@
+--- netcat-1.10.orig/netcat.c	2025-11-03 16:05:00.806757789 -0500
++++ netcat-1.10/netcat.c	2025-11-03 16:08:42.273783674 -0500
+@@ -1619,7 +1619,7 @@
+ 	break;
+       default:
+ 	errno = 0;
+-	bail ("nc -h for help");
++	bail ("netcat -h for help");
+     } /* switch x */
+   } /* while getopt */
+ 
+@@ -1795,8 +1795,8 @@
+ {
+   o_verbose = 1;
+   holler ("[v" DEBIAN_VERSION "]\n\
+-connect to somewhere:	nc [-options] hostname port[s] [ports] ... \n\
+-listen for inbound:	nc -l -p port [-options] [hostname] [port]\n\
++connect to somewhere:	netcat [-options] hostname port[s] [ports] ... \n\
++listen for inbound:	netcat -l -p port [-options] [hostname] [port]\n\
+ options:");
+ /* sigh, this necessarily gets messy.  And the trailing \ characters may be
+    interpreted oddly by some compilers, generating or not generating extra

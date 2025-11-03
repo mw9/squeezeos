@@ -10,6 +10,7 @@ IMAGE_INSTALL += "wireless-tools"
 
 # useful debug tools
 IMAGE_INSTALL += "stress"
+IMAGE_INSTALL += "netcat"
 #IMAGE_INSTALL += "tcpdump"
 
 # useful command line tools
