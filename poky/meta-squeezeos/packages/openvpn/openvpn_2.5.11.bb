@@ -1,7 +1,7 @@
 DESCRIPTION = "Open source VPN daemon"
 HOMEPAGE = "https://openvpn.net/"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = " \
         lzo \
@@ -34,6 +34,12 @@ SRC_URI_append_fab4 = " \
 EXTRA_OECONF = " --with-crypto-library=openssl --disable-plugin-auth-pam --disable-plugin-down-root "
 
 inherit autotools
+
+do_configure_append() {
+	for i in $(find ${S} -type f \( -name Makefile -o -name Makefile -o -name 'version.sh' -o -name 'config.h' \)); do
+		sed -i -e s:2.PRODUCT_VERSION_MINORPRODUCT_VERSION_PATCH:${PV}:g $i
+	done
+}
 
 do_install_append() {
 	install -m 0755 -d ${D}/${layout_sysconfdir}/${PN}
