@@ -1,18 +1,24 @@
 DESCRIPTION = "SqueezePlay - Fab4 specific code"
 LICENSE = "Logitech Public Source License"
 
-PR = "r4"
+PR = "r5"
 
 PROVIDES = "squeezeplay-fab4-bin"
 
 DEPENDS += "squeezeplay"
 
 SRC_URI=" \
+	${RALPHY_SQUEEZEOS}/libspotify-0.0.6-linux6-armv6.tar.gz \
 	file://fab4_bsp.so \
-	file://libspotify.so.6.0.600035 \
+	file://libspotify.c \
 	"
 
-S = "${WORKDIR}/squeezeplay_fab4"
+S = "${WORKDIR}/"
+
+do_compile() {
+	${CC} ${TARGET_CFLAGS} -I${WORKDIR}/libspotify-0.0.6-linux6-armv6/include/ -c -fPIC libspotify.c -o libspotify.o
+	${CC} ${TARGET_CFLAGS} ${TARGET_LDFLAGS} -shared -s -o ${WORKDIR}/libspotify.so.6.0.600035 libspotify.o
+}
 
 do_install() {
 	# move lua fab4 bsp module to correct location.
