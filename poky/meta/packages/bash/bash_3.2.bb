@@ -1,5 +1,5 @@
 require bash.inc
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-001;patch=1;pnum=0 \
@@ -41,4 +41,22 @@ SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-037;patch=1;pnum=0 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-038;patch=1;pnum=0 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-039;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-040;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-041;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-042;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-043;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-044;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-045;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-046;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-047;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-048;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-049;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-050;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-051;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-052;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-053;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-054;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-055;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-056;patch=1;pnum=0 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-057;patch=1;pnum=0 \
            "
