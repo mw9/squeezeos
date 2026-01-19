@@ -4,5 +4,4 @@
 #
 # Start getty for usb-serial-dongles
 
-/sbin/getty ttyUSB0 115200 VC vt100 &
-
+$(while true; do /sbin/getty ttyUSB0 115200 VC vt100; done) &
