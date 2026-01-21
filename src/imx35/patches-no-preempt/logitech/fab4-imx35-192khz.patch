@@ -1,0 +1,82 @@
+--- linux-2.6.26.orig/arch/arm/mach-mx35/devices.c	2012-02-18 18:41:09.482468991 +0000
++++ linux-2.6.26/arch/arm/mach-mx35/devices.c	2012-03-17 18:48:48.684060176 +0000
+@@ -542,6 +542,7 @@
+ static void fab4_spdif_set_clk(int sample_rate)
+ {
+ 	switch (sample_rate) {
++	case 192000:
+ 	case 96000:
+ 	case 48000:
+ 	case 32000:
+--- linux-2.6.26.orig/arch/arm/mach-mx35/mx35_fab4.c	2012-02-18 18:41:09.482468991 +0000
++++ linux-2.6.26/arch/arm/mach-mx35/mx35_fab4.c	2012-03-18 16:35:27.728674861 +0000
+@@ -340,6 +340,7 @@
+ static void fab4_ak4420_set_clk(int sample_rate)
+ {
+ 	switch (sample_rate) {
++	case 192000:
+ 	case 96000:
+ 	case 48000:
+ 	case 32000:
+--- linux-2.6.26.orig/sound/arm/mxc-alsa-spdif.c	2012-02-18 18:40:58.390469005 +0000
++++ linux-2.6.26/sound/arm/mxc-alsa-spdif.c	2012-03-17 22:08:53.273508275 +0000
+@@ -462,6 +462,18 @@
+ 	stc = __raw_readl(SPDIF_REG_STC + spdif_base_addr) & ~0x7FF;
+ 
+ 	switch (sample_rate) {
++	case 192000:
++		mxc_spdif_control.ch_status[3] |= 0x0E;
++		stc |= (chip->spdif_txclk_48000 << 8) | 0x01;
++		__raw_writel(stc, SPDIF_REG_STC + spdif_base_addr);
++		pr_debug("set sample rate to 192000\n");
++		break;
++	case 176400:
++		mxc_spdif_control.ch_status[3]  |= 0x0C;
++		stc |= (chip->spdif_txclk_44100 << 8) | 0x01;
++		__raw_writel(stc, SPDIF_REG_STC + spdif_base_addr);
++		pr_debug("set sample rate to 176400\n");
++		break;
+ 	case 96000:
+ 		mxc_spdif_control.ch_status[3] |= 0x0A;
+ 		stc |= (chip->spdif_txclk_48000 << 8) | 0x03;
+@@ -792,7 +804,7 @@
+ 
+ }
+ 
+-static unsigned int spdif_playback_rates[] = { 32000, 44100, 48000, 88200, 96000 };
++static unsigned int spdif_playback_rates[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
+ static unsigned int spdif_capture_rates[] = {
+ 	16000, 32000, 44100, 48000, 64000, 96000
+ };
+@@ -827,9 +839,9 @@
+ 	    SNDRV_PCM_FMTBIT_S24_LE,
+ 	.rates =
+ 	    SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+-	    SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
++	    SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+ 	.rate_min = 32000,
+-	.rate_max = 96000,
++	.rate_max = 192000,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+ 	.buffer_bytes_max = SPDIF_MAX_BUF_SIZE,
+--- linux-2.6.26.orig/sound/core/pcm.c	2012-02-18 18:40:58.434468992 +0000
++++ linux-2.6.26/sound/core/pcm.c	2012-03-17 17:49:55.232060001 +0000
+@@ -192,11 +192,16 @@
+ 	FORMAT(U18_3BE),
+ };
+ 
+-static const char *snd_pcm_format_name(snd_pcm_format_t format)
++const char *snd_pcm_format_name(snd_pcm_format_t format)
+ {
++	if (format >= ARRAY_SIZE(snd_pcm_format_names))
++		return "Unknown";
++
+ 	return snd_pcm_format_names[format];
+ }
+ 
++EXPORT_SYMBOL_GPL(snd_pcm_format_name);
++
+ static char *snd_pcm_stream_names[] = {
+ 	STREAM(PLAYBACK),
+ 	STREAM(CAPTURE),

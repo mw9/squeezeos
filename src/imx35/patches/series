@@ -1247,4 +1247,5 @@ logitech/fec-add-support-rtl8210.patch
 logitech/spdif-no-preemp.patch
 logitech/fix-screen-flicker-hack.patch
 logitech/fix-sleeping-in-invalid-context-by-ir_con.patch
+logitech/fab4-imx35-192khz.patch
 
