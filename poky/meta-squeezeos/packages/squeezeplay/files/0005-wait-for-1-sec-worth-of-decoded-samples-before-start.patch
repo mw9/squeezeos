@@ -1,0 +1,32 @@
+From 52371b1b67a50ba81050c91091834d48846aa7a3 Mon Sep 17 00:00:00 2001
+From: Adrian Smith <triode1@btinternet.com>
+Date: Sat, 19 May 2012 23:45:54 +0100
+Subject: [PATCH 2/7] wait for 1 sec worth of decoded samples before starting
+ 172/192k streams (equivalent of output_threshold 100)
+
+---
+ src/audio/decode/decode_alsa_backend.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/audio/decode/decode_alsa_backend.c b/src/audio/decode/decode_alsa_backend.c
+index 5b371bfbd..9e833a115 100644
+--- a/src/audio/decode/decode_alsa_backend.c
++++ b/src/audio/decode/decode_alsa_backend.c
+@@ -283,10 +283,12 @@ static void playback_callback(struct decode_alsa *state,
+ 
+ 	decode_frames = BYTES_TO_SAMPLES(fifo_bytes_used(&decode_audio->fifo));
+ 
+-	/* Should we start the audio now based on having enough decoded data? */
++	/* Should we start the audio now based on having enough decoded data?
++	   - override output_thresh for 176/192k and wait for 1 sec of data before starting */
+ 	if (decode_audio->state & DECODE_STATE_AUTOSTART
+ 			&& decode_frames > (output_frames * (3 + state->period_count))
+-			&& decode_frames > (decode_audio->output_threshold * state->pcm_sample_rate / 10)
++			&& decode_frames > (state->pcm_sample_rate <= 96000 ? (decode_audio->output_threshold * state->pcm_sample_rate / 10) :
++								state->pcm_sample_rate)
+ 		)
+ 	{
+ 		u32_t now = jive_jiffies();
+-- 
+2.36.1
+

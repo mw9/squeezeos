@@ -1,0 +1,26 @@
+From 48791178fb53891c2b459ee0704bb34252646aba Mon Sep 17 00:00:00 2001
+From: Adrian Smith <triode1@btinternet.com>
+Date: Sun, 20 May 2012 00:08:49 +0100
+Subject: [PATCH 5/7] protect against corrupt sample rate (if 7.8 server used
+ with 7.7 squeezeplay for pcm)
+
+---
+ src/audio/decode/decode_alsa_backend.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/audio/decode/decode_alsa_backend.c b/src/audio/decode/decode_alsa_backend.c
+index da916d22b..c90fe1e09 100644
+--- a/src/audio/decode/decode_alsa_backend.c
++++ b/src/audio/decode/decode_alsa_backend.c
+@@ -806,7 +806,7 @@ static int pcm_open(struct decode_alsa *state, bool_t loopback, int mode)
+ 		sample_rate = decode_audio->set_sample_rate;
+ 		decode_audio_unlock();
+ 
+-		if (sample_rate == 0) {
++		if (sample_rate == 0 || sample_rate > 192000) {
+ 			LOG_ERROR("invalid sample rate\n");
+ 			sample_rate = 44100;
+ 		}
+-- 
+2.36.1
+

@@ -2,7 +2,7 @@ DESCRIPTION = "SqueezePlay"
 LICENSE = "Logitech Public Source License"
 
 PV = "${DISTRO_VERSION}+svnr${SRCREV}"
-PR = "r24"
+PR = "r25"
 
 DEPENDS += "libsdl libsdl-ttf libsdl-gfx libsdl-image"
 DEPENDS += "lua lua-native luatolua++"
@@ -17,6 +17,16 @@ SRC_URI = "${SQUEEZEPLAY_SCM};module=squeezeplay \
 SRC_URI_append_baby = " \
 	file://0001-Initialize-effects-resampler-while-pcm-closed.patch;patch=1 \
 	file://0002-Eliminate-bass-drop-out-by-disabling-XRUN-and-substi.patch;patch=1 \
+	"
+SRC_URI_append_fab4 = " \
+	file://0004-support-for-auto-detect-of-alsa-sample-format.patch;patch=1 \
+	file://0005-wait-for-1-sec-worth-of-decoded-samples-before-start.patch;patch=1 \
+	file://0006-add-support-of-usb-output-devices-which-become-unava.patch;patch=1 \
+	file://0007-add-ability-to-fallback-to-plughw-for-hw-device-if-r.patch;patch=1 \
+	file://0008-protect-against-corrupt-sample-rate-if-7.8-server-us.patch;patch=1 \
+	file://0009-experimental-cpu-randomisation.patch;patch=1 \
+	file://0010-ignore-tuned-buffer-values-when-using-plug-layer.patch;patch=1 \
+	file://EnhancedDigitalOutput \
 	"
 
 S = "${WORKDIR}/squeezeplay"
@@ -98,6 +108,15 @@ do_stage() {
 do_install_append() {
 	install -m 0644 ${WORKDIR}/logconf.lua ${D}${datadir}/jive/logconf.lua
 
+}
+
+do_install_append_fab4() {
+        # Audio Settings applet
+        install -m 0755 -d ${D}${datadir}/jive/applets/EnhancedDigitalOutput
+        install -m 0644 ${WORKDIR}/EnhancedDigitalOutput/EnhancedDigitalOutputApplet.lua ${D}${datadir}/jive/applets/EnhancedDigitalOutput/EnhancedDigitalOutputApplet.lua
+        install -m 0644 ${WORKDIR}/EnhancedDigitalOutput/EnhancedDigitalOutputMeta.lua ${D}${datadir}/jive/applets/EnhancedDigitalOutput/EnhancedDigitalOutputMeta.lua
+        install -m 0644 ${WORKDIR}/EnhancedDigitalOutput/loadPriority.lua ${D}${datadir}/jive/applets/EnhancedDigitalOutput/loadPriority.lua
+        install -m 0644 ${WORKDIR}/EnhancedDigitalOutput/strings.txt ${D}${datadir}/jive/applets/EnhancedDigitalOutput/strings.txt
 }
 
 PACKAGES = "${PN}-dbg ${PN}-qvgaskin ${PN}-jiveskin ${PN}-fab4skin ${PN}-babyskin ${PN}"
