@@ -3485,77 +3485,6 @@ diff -durN -x '*.o' -x '*~' -x '*.o.cmd' -x '*.a' -x '*.map' -x '*.symvers' -x '
 +}
 +
 +#endif /* __USBAUDIO_HELPER_H */
-diff -durN -x '*.o' -x '*~' -x '*.o.cmd' -x '*.a' -x '*.map' -x '*.symvers' -x '*.S' -x '*.version' -x '*logo_logitech_fab4*' linux-2.6.26.orig/sound/usb/Kconfig linux-2.6.26/sound/usb/Kconfig
---- linux-2.6.26.orig/sound/usb/Kconfig	2012-02-18 18:40:58.398469008 +0000
-+++ linux-2.6.26/sound/usb/Kconfig	2012-02-25 17:51:46.415193917 +0000
-@@ -16,6 +16,18 @@
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-usb-audio.
- 
-+config SND_USB_UA101
-+	tristate "Edirol UA-101/UA-1000 driver (EXPERIMENTAL)"
-+	depends on X86 && EXPERIMENTAL
-+	select SND_PCM
-+	select SND_RAWMIDI
-+	help
-+	  Say Y here to include support for the Edirol UA-101 and UA-1000
-+	  audio/MIDI interfaces.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-ua101.
-+
- config SND_USB_USX2Y
- 	tristate "Tascam US-122, US-224 and US-428 USB driver"
- 	depends on SND && USB && (X86 || PPC || ALPHA)
-@@ -44,7 +56,14 @@
- 	    * Native Instruments Kore Controller
- 	    * Native Instruments Kore Controller 2
- 	    * Native Instruments Audio Kontrol 1
-+	    * Native Instruments Audio 2 DJ
-+	    * Native Instruments Audio 4 DJ
- 	    * Native Instruments Audio 8 DJ
-+	    * Native Instruments Traktor Audio 2
-+	    * Native Instruments Guitar Rig Session I/O
-+	    * Native Instruments Guitar Rig mobile
-+	    * Native Instruments Traktor Kontrol X1
-+	    * Native Instruments Traktor Kontrol S4
- 
- 	   To compile this driver as a module, choose M here: the module
- 	   will be called snd-usb-caiaq.
-@@ -62,6 +81,33 @@
- 	   * Native Instruments Kore Controller
- 	   * Native Instruments Kore Controller 2
- 	   * Native Instruments Audio Kontrol 1
-+	   * Native Instruments Traktor Kontrol S4
-+
-+config SND_USB_US122L
-+	tristate "Tascam US-122L USB driver"
-+	depends on X86 && EXPERIMENTAL
-+	select SND_HWDEP
-+	select SND_RAWMIDI
-+	help
-+	  Say Y here to include support for Tascam US-122L USB Audio/MIDI
-+	  interfaces.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-usb-us122l.
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
- 
- endmenu
- 
 diff -durN -x '*.o' -x '*~' -x '*.o.cmd' -x '*.a' -x '*.map' -x '*.symvers' -x '*.S' -x '*.version' -x '*logo_logitech_fab4*' linux-2.6.26.orig/sound/usb/Makefile linux-2.6.26/sound/usb/Makefile
 --- linux-2.6.26.orig/sound/usb/Makefile	2012-02-18 18:40:58.398469008 +0000
 +++ linux-2.6.26/sound/usb/Makefile	2012-02-25 17:32:19.867193985 +0000
@@ -3589,7 +3518,7 @@ diff -durN -x '*.o' -x '*~' -x '*.o.cmd' -x '*.a' -x '*.map' -x '*.symvers' -x '
 +
 +
 +
-+obj-$(CONFIG_SND) += usx2y/ caiaq/
++obj-$(CONFIG_SND) += caiaq/
 diff -durN -x '*.o' -x '*~' -x '*.o.cmd' -x '*.a' -x '*.map' -x '*.symvers' -x '*.S' -x '*.version' -x '*logo_logitech_fab4*' linux-2.6.26.orig/sound/usb/midi.c linux-2.6.26/sound/usb/midi.c
 --- linux-2.6.26.orig/sound/usb/midi.c	1970-01-01 01:00:00.000000000 +0100
 +++ linux-2.6.26/sound/usb/midi.c	2012-02-25 17:53:41.363195042 +0000
