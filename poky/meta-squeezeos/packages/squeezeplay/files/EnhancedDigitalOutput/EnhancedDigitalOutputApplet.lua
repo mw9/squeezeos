@@ -268,17 +268,21 @@ function _parseCards(self)
         return
     end
 
-    -- internal cards, put first in list
-    t[1] = { id = "TXRX", desc = tostring(self:string("DIGITAL_ONLY")) }
-    t[2] = { id = "fab4", desc = tostring(self:string("ANALOG_ONLY")) }
-
     -- read and parse entries
     for line in cards:lines() do
         local num, id, desc = string.match(line, "(%d+)%s+%[(.-)%s*%]:%s+(.*)")
-        if id and id != "TXRX" and id != "fab4" and id != "fab4_1" then
-            -- usb card - get bitdepth info
-            local info = self:_parseStreamInfo(id)
-            t[#t+1] = { id = id, desc = desc, needshub = info.needshub }
+        if id then
+		if id == "fab4_1" then
+			log:info("skip internal speaker (wm8974)")
+		elseif id == "TXRX" then
+			t[#t+1] = { id = "TXRX", desc = tostring(self:string("DIGITAL_ONLY")) }
+		elseif id == "fab4" then
+			t[#t+1] = { id = "fab4", desc = tostring(self:string("ANALOG_ONLY")) }
+		else
+			-- usb card - get bitdepth info
+			local info = self:_parseStreamInfo(id)
+			t[#t+1] = { id = id, desc = desc, needshub = info.needshub }
+		end
         end
     end
 

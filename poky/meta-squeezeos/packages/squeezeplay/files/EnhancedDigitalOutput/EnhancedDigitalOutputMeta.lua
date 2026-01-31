@@ -112,8 +112,8 @@ function registerApplet(meta)
             alsaSampleSize = 24,            -- now auto detected by jive_alsa
             alsaPlaybackBufferTime = settings.bufferTime,
             alsaPlaybackPeriodCount = settings.periodCount,
-            alsaEffectsDevice = "plughw:2,0",
-            alsaCaptureDevice = "plughw:2,0",
+            alsaEffectsDevice = "plughw:CARD=fab4_1",
+            alsaCaptureDevice = "plughw:CARD=fab4_1",
         })
         
         -- if spdif or usb output increase priority of relavent irq task
