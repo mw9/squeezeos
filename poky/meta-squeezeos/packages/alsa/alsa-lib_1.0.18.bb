@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
 
-PR = "3"
+PR = "4"
 
 # configure.in sets -D__arm__ on the command line for any arm system
 # (not just those with the ARM instruction set), this should be removed,
@@ -19,7 +19,7 @@ inherit autotools pkgconfig
 require alsa-fpu.inc
 EXTRA_OECONF += "${@get_alsa_fpu_setting(bb, d)} "
 
-EXTRA_OECONF = "\
+EXTRA_OECONF = " \
 	     --disable-aload \
 	     --enable-mixer \
 	     --enable-pcm \
@@ -30,7 +30,11 @@ EXTRA_OECONF = "\
 	     --disable-alisp \
 	     --enable-old-symbols \
 	     --disable-python \
-	     --with-pcm-plugins=hw,plug,extplug,multi,rate,route,empty"
+"
+
+EXTRA_OECONF_append_jive = " --with-pcm-plugins=hw,plug,extplug,multi,rate,route,empty"
+EXTRA_OECONF_append_baby = " --with-pcm-plugins=hw,plug,extplug,multi,rate,route,empty"
+EXTRA_OECONF_append_fab4 = " --with-pcm-plugins=hw,plug,extplug,multi,rate,route,asym,dmix,dshare,dsnoop,empty"
 
 do_stage () {
 	oe_libinstall -so -C src libasound ${STAGING_LIBDIR}/
