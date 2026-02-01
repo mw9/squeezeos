@@ -109,11 +109,11 @@ function registerApplet(meta)
         log:info("playbackDevice: ", playbackDevice, " bufferTime: ", settings.bufferTime, " periodCount: ", settings.periodCount)
         Decode:open({
             alsaPlaybackDevice = playbackDevice,
-            alsaSampleSize = 24,            -- now auto detected by jive_alsa
+            alsaSampleSize = 24, -- ignored, jive_alsa auto detects supported formats
             alsaPlaybackBufferTime = settings.bufferTime,
             alsaPlaybackPeriodCount = settings.periodCount,
-            alsaEffectsDevice = "plughw:CARD=fab4_1",
-            alsaCaptureDevice = "plughw:CARD=fab4_1",
+            alsaEffectsDevice = "plugwm8974",
+            alsaCaptureDevice = "wm8974",
         })
         
         -- if spdif or usb output increase priority of relavent irq task

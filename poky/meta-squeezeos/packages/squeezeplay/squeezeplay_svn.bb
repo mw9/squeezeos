@@ -2,7 +2,7 @@ DESCRIPTION = "SqueezePlay"
 LICENSE = "Logitech Public Source License"
 
 PV = "${DISTRO_VERSION}+svnr${SRCREV}"
-PR = "r25"
+PR = "r26"
 
 DEPENDS += "libsdl libsdl-ttf libsdl-gfx libsdl-image"
 DEPENDS += "lua lua-native luatolua++"
@@ -26,6 +26,7 @@ SRC_URI_append_fab4 = " \
 	file://0008-protect-against-corrupt-sample-rate-if-7.8-server-us.patch;patch=1 \
 	file://0009-experimental-cpu-randomisation.patch;patch=1 \
 	file://0010-ignore-tuned-buffer-values-when-using-plug-layer.patch;patch=1 \
+	file://0011-force-effects-device-sample-format.patch;patch=1 \
 	file://EnhancedDigitalOutput \
 	"
 
