@@ -13,19 +13,19 @@ SELECT_OUTPUT
 	EN	Select Audio Output
 
 CURRENT
-	EN	 [Current]
+	EN	 [Active]
 
 INFO
 	EN	 [Info]
 
 ANALOG_DIGITAL
-	EN	Analog + Digital
+	EN	Analog + Digital 96k 
 
 DIGITAL_ONLY
-	EN	Digital Only
+	EN	Digital Only 192k
 
 ANALOG_ONLY
-	EN	Analog Only (ak4420)
+	EN	Analog Only 96k
 
 USB1_DAC_NO_HUB
 	EN	Use with 44/48kHz no-hub workaround
@@ -49,7 +49,7 @@ HELP_NO_HUB_OPTION
 	EN	Asynchronous USB 1 dacs should either be used with an external USB 2 High Speed hub or this workaround.  The workaround will restrict playback to 44/48kHz sampling rates and will not work with all dacs.  (Reboots after changing)
 
 KERNEL_IDLE_OPTION
-	EN	Kernel Idle Option (Experimental)
+	EN	Kernel Idle Option
 
 KERNEL_IDLE_SETTING
 	EN	Avoid low power during playback
@@ -57,8 +57,17 @@ KERNEL_IDLE_SETTING
 HELP_KERNEL_IDLE_OPTION
 	EN	This option avoids the cpu entering low power mode during playback
 
+HIFACE_USB_OPTION
+	EN	M2Tech Hiface USB Option
+
+HIFACE_USB_SETTING
+	EN	Enable support for Hiface USB dacs
+
+HELP_HIFACE_USB_OPTION
+	EN	Load kernel module for M2Tech hiface compatible USB dacs at boot.
+
 BUFFER_TUNING
-	EN	Buffer Tuning (Experimental)
+	EN	Buffer Tuning
 
 HELP_BUFFER_TUNING
 	EN	Tuning buffer size may impact sound quality

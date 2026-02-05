@@ -218,6 +218,30 @@ function optionsMenu(self, menuItem)
     })
 
     menu:addItem({
+        text = self:string("HIFACE_USB_OPTION"),
+        sound = "WINDOWSHOW",
+        callback = function(event, menuItem)
+                       local window = Window("text_list", menuItem.text)
+                       local menu = SimpleMenu("menu")
+                       menu:setHeaderWidget(Textarea("help_text", self:string("HELP_HIFACE_USB_OPTION")))
+                       menu:addItem({
+                            text = self:string("HIFACE_USB_SETTING"),
+                            style = 'item_choice',
+                            check = Checkbox("checkbox",
+                                  function(object, isSelected)
+                                      self:getSettings()["hifaceUSB"] = isSelected
+                                      self:storeSettings()
+                                      self:_restart()
+                                  end,
+                                  self:getSettings()["hifaceUSB"]
+                            ),
+                       })
+                       window:addWidget(menu)
+                       window:show()
+                   end,
+    })
+
+    menu:addItem({
         text = self:string("BUFFER_TUNING"),
         sound = "WINDOWSHOW",
         callback = function(event, menuItem)

@@ -40,6 +40,7 @@ function defaultSettings(self)
         bufferTime = 20000,
         periodCount = 2,
         embeddedTTHack = false,
+        hifaceUSB = false,
         cpuIdleFullspeed = false,
         firstUse = true
     }
@@ -50,6 +51,11 @@ function registerApplet(meta)
     local settings = meta:getSettings()
     local updating
     
+    -- load m2tech hiface usb kernel module
+    if settings.hifaceUSB then
+        os.execute("insmod /lib/modules/`uname -r`/snd-usb-hiface.ko")
+    end
+
     -- if usb hack then set kernel option
     if settings.embeddedTTHack then
         _write("/sys/module/snd_usb_audio/parameters/async_embedded_tt_hack", "1")
