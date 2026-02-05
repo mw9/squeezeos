@@ -1234,7 +1234,6 @@ logitech/squeezeos-mtd-sysfs-hack.patch
 logitech/fab4-bsp.patch
 logitech/iomux-fixes.patch
 logitech/fab4-dot.config.patch
-logitech/fab4-hwmon.patch
 logitech/fab4-imx35-bsp.patch
 logitech/fab4-sound.patch
 logitech/fab4-video.patch

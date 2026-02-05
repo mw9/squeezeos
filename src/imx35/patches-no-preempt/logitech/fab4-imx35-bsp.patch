@@ -715,10 +715,10 @@ Index: linux-2.6.26/arch/arm/mach-mx35/mx35_fab4.c
 +		I2C_BOARD_INFO("clearpad", 0x20),
 +		.irq = IOMUX_TO_IRQ(MX35_PIN_I2C2_CLK),
 +	},
-+	{
-+		/* really a tmp100 */
-+		I2C_BOARD_INFO("lm75", 0x48),
-+	},
++
++
++
++
 +	{
 +		I2C_BOARD_INFO("tsl2569", 0x39),
 +	},
