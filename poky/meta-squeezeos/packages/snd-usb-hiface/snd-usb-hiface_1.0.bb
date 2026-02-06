@@ -1,8 +1,7 @@
-DESCRIPTION = "M2Tech hiFace compatible usb linux kernel module"
-HOMEPAGE = "https://github.com/panicking/snd-usb-asyncaudio/"
-LICENSE = "GPL"
+DESCRIPTION = "Linux USB ALSA kernel module for M2Tech hiFace audio devices"
+HOMEPAGE = "https://github.com/ralph-irving/snd-usb-asyncaudio/"
+LICENSE = "GPLv2"
 PR = "r0"
-
 
 SRC_URI = " \
 "
