@@ -1,0 +1,13 @@
+index a57637e5..2873fafc 100644
+--- dropbear-2025.89/src/svr-tcpfwd.c
++++ dropbear-2025.89/src/svr-tcpfwd.c
+@@ -56,7 +56,9 @@ void recv_msg_global_request_remotetcp() {
+ static int svr_cancelremotetcp(void);
+ static int svr_remotetcpreq(int *allocated_listen_port);
+ static int newtcpdirect(struct Channel * channel);
++#if DROPBEAR_SVR_LOCALSTREAMFWD
+ static int newstreamlocal(struct Channel * channel);
++#endif
+ 
+ #if DROPBEAR_SVR_REMOTETCPFWD
+ static const struct ChanType svr_chan_tcpremote = {
