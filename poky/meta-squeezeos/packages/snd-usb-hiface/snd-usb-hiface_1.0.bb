@@ -1,9 +1,11 @@
 DESCRIPTION = "Linux USB ALSA kernel module for M2Tech hiFace audio devices"
 HOMEPAGE = "https://github.com/ralph-irving/snd-usb-asyncaudio/"
 LICENSE = "GPLv2"
-PR = "r1"
+PR = "r2"
 
 inherit module-base
+
+INHIBIT_PACKAGE_STRIP = 1
 
 SRC_URI = " \
 "
