@@ -3,11 +3,9 @@ DESCRIPTION = "Only provides sftp-server utility for dropbear ssh server"
 HOMEPAGE = "http://www.openssh.com/"
 LICENSE = "BSD-2-Clause & BSD-3-Clause & ISC & MIT"
 
-PR="r0"
+PR="r1"
 
 SRC_URI = "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${PN}-${PV}.tar.gz"
-
-S="${WORKDIR}/${PN}-${PV}"
 
 inherit autotools
 
@@ -26,4 +24,4 @@ do_install () {
         install -m 0755 ${S}/sftp-server ${D}${libexecdir}/sftp-server
 }
 
-RPROVIDES="sftp-server"
+RPROVIDES_${PN} = "sftp-server"
