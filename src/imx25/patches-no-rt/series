@@ -1376,3 +1376,5 @@ logitech/baby-msp430-reset-if-no-i2c.patch
 
 # Fixes to run without RT kernel
 logitech/non-rt-fixes.patch
+
+logitech/baby-enable-nfs-boot.patch

@@ -1389,3 +1389,4 @@ logitech/baby-dac-clko-stddrv.patch
 
 logitech/baby-debounce.patch
 logitech/msp430-init-seq.patch
+logitech/baby-enable-nfs-boot.patch
