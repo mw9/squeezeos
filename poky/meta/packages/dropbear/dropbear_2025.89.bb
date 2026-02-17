@@ -19,7 +19,7 @@ SRC_URI = "https://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
 	file://client-check-isatty-when-sending-pty-request.patch;patch=1 \
 	"
 
-PR="r0"
+PR="r1"
 
 inherit autotools
 
