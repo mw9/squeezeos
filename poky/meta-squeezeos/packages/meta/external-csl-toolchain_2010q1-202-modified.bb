@@ -10,7 +10,7 @@
 #    populated.
 
 
-PR = "r0"
+PR = "r1"
 
 # Base package
 
@@ -24,11 +24,12 @@ SRC_URI = "https://sourcery.sw.siemens.com/public/gnu_toolchain/arm-none-linux-g
         file://SUPPORTED"
 
 
-# Remove timezone data installed by base package.
+# Remove timezone data and getconf shared libraries installed by base package.
 
 do_install_append() {
         rm -r ${D}/usr/share/zoneinfo
         rm    ${D}/etc/localtime
+        rm -r ${D}/usr/libexec/getconf
 }
 
 
